@@ -17,15 +17,19 @@
 
 #define TICKLESS IS_ENABLED(CONFIG_TICKLESS_KERNEL)
 
+#define RISCV_MSIP_OTHER(id) (RISCV_MSIP_BASE + (uintptr_t)(id) * 4)
+#define RISCV_MSIP     RISCV_MSIP_OTHER(z_riscv_hart_id())
+#define RISCV_MTIMECMP (RISCV_MTIMECMP_BASE + (uintptr_t)z_riscv_hart_id() * 8)
+
 static struct k_spinlock lock;
 static uint64_t last_count;
 
 static void set_mtimecmp(uint64_t time)
 {
 #ifdef CONFIG_64BIT
-	*(volatile uint64_t *)RISCV_MTIMECMP_BASE = time;
+	*(volatile uint64_t *)RISCV_MTIMECMP = time;
 #else
-	volatile uint32_t *r = (uint32_t *)RISCV_MTIMECMP_BASE;
+	volatile uint32_t *r = (uint32_t *)RISCV_MTIMECMP;
 
 	/* Per spec, the RISC-V MTIME/MTIMECMP registers are 64 bit,
 	 * but are NOT internally latched for multiword transfers.  So
@@ -79,6 +83,20 @@ static void timer_isr(const void *arg)
 	k_spin_unlock(&lock, key);
 	sys_clock_announce(IS_ENABLED(CONFIG_TICKLESS_KERNEL) ? dticks : 1);
 }
+
+#ifdef CONFIG_SMP
+void z_riscv_sched_ipi(void);
+
+static void soft_isr(const void *arg)
+{
+	volatile uint32_t *r = (uint32_t *)RISCV_MSIP;
+
+	ARG_UNUSED(arg);
+
+	*r = 0;
+	z_riscv_sched_ipi();
+}
+#endif
 
 void sys_clock_set_timeout(int32_t ticks, bool idle)
 {
@@ -143,6 +161,32 @@ uint64_t sys_clock_cycle_get_64(void)
 	return mtime();
 }
 
+#ifdef CONFIG_SMP
+void arch_sched_ipi(void)
+{
+	unsigned int key = arch_irq_lock();
+	uint32_t id = z_riscv_hart_id();
+
+	for (int i = 0; i < CONFIG_MP_NUM_CPUS; i++) {
+		volatile uint32_t *r = (uint32_t *)RISCV_MSIP_OTHER(i);
+
+		if (i == id)
+			continue;
+
+		*r = 1;
+	}
+
+	arch_irq_unlock(key);
+}
+
+void smp_timer_init(void)
+{
+	set_mtimecmp(last_count + CYC_PER_TICK);
+	irq_enable(RISCV_MACHINE_TIMER_IRQ);
+	irq_enable(RISCV_MACHINE_SOFT_IRQ);
+}
+#endif /* CONFIG_SMP */
+
 static int sys_clock_driver_init(const struct device *dev)
 {
 	ARG_UNUSED(dev);
@@ -151,6 +195,12 @@ static int sys_clock_driver_init(const struct device *dev)
 	last_count = mtime();
 	set_mtimecmp(last_count + CYC_PER_TICK);
 	irq_enable(RISCV_MACHINE_TIMER_IRQ);
+
+#ifdef CONFIG_SMP
+	IRQ_CONNECT(RISCV_MACHINE_SOFT_IRQ, 0, soft_isr, NULL, 0);
+	irq_enable(RISCV_MACHINE_SOFT_IRQ);
+#endif
+
 	return 0;
 }
 

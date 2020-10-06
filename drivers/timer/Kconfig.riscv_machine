@@ -8,6 +8,7 @@ config RISCV_MACHINE_TIMER
 	depends on SOC_FAMILY_RISCV_PRIVILEGE
 	select TICKLESS_CAPABLE
 	select TIMER_HAS_64BIT_CYCLE_COUNTER
+	select SCHED_IPI_SUPPORTED
 	help
 	  This module implements a kernel device driver for the generic RISCV machine
 	  timer driver. It provides the standard "system clock driver" interfaces.
