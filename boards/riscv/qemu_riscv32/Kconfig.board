@@ -5,6 +5,8 @@ config BOARD_QEMU_RISCV32
 	depends on SOC_RISCV_VIRT
 	select QEMU_TARGET
 	select CPU_HAS_FPU
+	select USE_SWITCH
+	select USE_SWITCH_SUPPORTED
 
 config BOARD_QEMU_RISCV32_XIP
 	bool "QEMU RISCV32 XIP target"
