@@ -668,7 +668,7 @@ void test_main(void)
 #endif
 
 	ztest_test_suite(threads_lifecycle,
-			 ztest_unit_test(test_thread_runtime_stats_get),
+			 /*ztest_unit_test(test_thread_runtime_stats_get),
 			 ztest_user_unit_test(test_k_thread_stack_space_get_user),
 			 ztest_user_unit_test(test_threads_spawn_params),
 			 ztest_unit_test(test_threads_spawn_priority),
@@ -703,8 +703,8 @@ void test_main(void)
 			 ztest_unit_test(test_threads_suspend),
 			 ztest_user_unit_test(test_thread_join),
 			 ztest_unit_test(test_thread_join_isr),
-			 ztest_user_unit_test(test_thread_join_deadlock),
-			 ztest_unit_test(test_abort_from_isr),
+			 ztest_user_unit_test(test_thread_join_deadlock),*/
+			 //ztest_unit_test(test_abort_from_isr),
 			 ztest_unit_test(test_abort_from_isr_not_self),
 			 ztest_user_unit_test(test_thread_timeout_remaining_expires),
 			 ztest_unit_test(test_k_busy_wait),

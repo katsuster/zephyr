@@ -36,10 +36,12 @@ void arch_irq_offload(irq_offload_routine_t routine, const void *parameter)
 	unsigned int key;
 
 	key = irq_lock();
+	//k_sched_lock();
 	_offload_routine = routine;
 	offload_param = parameter;
 
 	__asm__ volatile ("ecall");
 
 	irq_unlock(key);
+	//k_sched_unlock();
 }

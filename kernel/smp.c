@@ -15,6 +15,7 @@ static atomic_t start_flag;
 
 unsigned int z_smp_global_lock(void)
 {
+//printk("aaaaaaaa\n");
 	unsigned int key = arch_irq_lock();
 
 	if (!_current->base.global_lock_count) {
@@ -29,6 +30,7 @@ unsigned int z_smp_global_lock(void)
 
 void z_smp_global_unlock(unsigned int key)
 {
+//printk("bbbbbbbbbb\n");
 	if (_current->base.global_lock_count) {
 		_current->base.global_lock_count--;
 
@@ -43,6 +45,7 @@ void z_smp_global_unlock(unsigned int key)
 /* Called from within z_swap(), so assumes lock already held */
 void z_smp_release_global_lock(struct k_thread *thread)
 {
+//printk("cccccccccccc\n");
 	if (!thread->base.global_lock_count) {
 		atomic_clear(&global_lock);
 	}

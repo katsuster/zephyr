@@ -122,11 +122,16 @@ int arch_irq_connect_dynamic(unsigned int irq, unsigned int priority,
 
 void arch_irq_offload(irq_offload_routine_t routine, const void *parameter)
 {
+unsigned int key;
+key = irq_lock();
+
 	x86_irq_funcs[CONFIG_IRQ_OFFLOAD_VECTOR - IV_IRQS] = routine;
 	x86_irq_args[CONFIG_IRQ_OFFLOAD_VECTOR - IV_IRQS] = parameter;
 	__asm__ volatile("int %0" : : "i" (CONFIG_IRQ_OFFLOAD_VECTOR)
 			  : "memory");
 	x86_irq_funcs[CONFIG_IRQ_OFFLOAD_VECTOR - IV_IRQS] = NULL;
+
+irq_unlock(key);
 }
 
 #endif /* CONFIG_IRQ_OFFLOAD */

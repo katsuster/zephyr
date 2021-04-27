@@ -133,13 +133,13 @@ void arch_new_thread(struct k_thread *thread, k_thread_stack_t *stack,
 void *z_arch_get_next_switch_handle(struct k_thread **old_thread)
 {
 void *ret;
-struct k_thread *new_thread;
+//struct k_thread *new_thread;
 	*old_thread =  _current;
 
 	ret = z_get_next_switch_handle(*old_thread);
-new_thread = ret;
-if (*old_thread != new_thread)
-printk("%d:p cyc:%08x sw:%p(%s) -> %p(%s)\n", arch_curr_cpu()->id, sys_clock_cycle_get_32(), *old_thread, (*old_thread)->name, new_thread, new_thread->name);
+//new_thread = ret;
+//if (*old_thread != new_thread)
+//printk("%d:p cyc:%08x sw:%p(%s) -> %p(%s)\n", arch_curr_cpu()->id, sys_clock_cycle_get_32(), *old_thread, (*old_thread)->name, new_thread, new_thread->name);
 return ret;
 }
 #endif

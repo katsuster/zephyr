@@ -144,7 +144,7 @@ static ALWAYS_INLINE unsigned int do_swap(unsigned int key,
 			new_thread->switch_handle = NULL;
 		}
 		k_spin_release(&sched_spinlock);
-printk("%d:v cyc:%08x sw:%p(%s) -> %p(%s)\n", arch_curr_cpu()->id, sys_clock_cycle_get_32(), old_thread, old_thread->name, new_thread, new_thread->name);
+//printk("%d:v cyc:%08x sw:%p(%s) -> %p(%s)\n", arch_curr_cpu()->id, sys_clock_cycle_get_32(), old_thread, old_thread->name, new_thread, new_thread->name);
 		arch_switch(newsh, &old_thread->switch_handle);
 	} else {
 		k_spin_release(&sched_spinlock);
