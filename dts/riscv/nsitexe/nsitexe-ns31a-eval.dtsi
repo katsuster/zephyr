@@ -1,0 +1,100 @@
+/* SPDX-License-Identifier: Apache-2.0 */
+
+/dts-v1/;
+
+/ {
+	#address-cells = <2>;
+	#size-cells = <2>;
+	compatible = "nsitexe,akaria-ns31a-arty";
+	model = "nsitexe,akaria-ns31a-arty";
+
+	cpus: cpus {
+		#address-cells = <1>;
+		#size-cells = <0>;
+		timebase-frequency = <25000000>;
+		compatible = "nsitexe,ns31a";
+		cpu@0 {
+			clock-frequency = <25000000>;
+			compatible = "nsitexe,ns31a", "riscv";
+			device_type = "cpu";
+			i-cache-block-size = <64>;
+			i-cache-sets = <64>;
+			i-cache-size = <16384>;
+			reg = <0>;
+			riscv,isa = "rv32imaf";
+			status = "okay";
+			cpu0_intc: interrupt-controller {
+				compatible = "riscv,cpu-intc";
+				#address-cells = <0>;
+				#interrupt-cells = <1>;
+				interrupt-controller;
+			};
+		};
+	};
+
+	ram0: memory@60000000 {
+		device_type = "memory";
+		reg = <0x0 0x60000000 0x0 0x10000000>;
+	};
+
+	clk: clk {
+		#clock-cells = <0>;
+		compatible = "fixed-clock";
+		clock-frequency = <25000000>;
+	};
+
+	clk_d2: clk_d2 {
+		#clock-cells = <0>;
+		compatible = "fixed-clock";
+		clock-frequency = <12500000>;
+	};
+
+	soc {
+		#address-cells = <2>;
+		#size-cells = <2>;
+		#clock-cells = <1>;
+		compatible = "simple-bus";
+		ranges;
+
+		itim0: itim@1800000 {
+			compatible = "nsitexe,itim0";
+			reg = <0x0 0x1800000 0x0 0x20000>;
+			reg-names = "mem";
+		};
+
+		itim1: itim@80000000 {
+			compatible = "nsitexe,itim0";
+			reg = <0x0 0x80000000 0x0 0x10000>;
+			reg-names = "mem";
+		};
+
+		clint: clint@2000000 {
+			compatible = "sifive,clint0";
+			interrupts-extended = <&cpu0_intc 3 &cpu0_intc 7>;
+			reg = <0x0 0x2000000 0x0 0x10000>;
+		};
+
+		plic: plic@c000000 {
+			compatible = "sifive,plic-1.0.0";
+			#address-cells = <0>;
+			#interrupt-cells = <2>;
+			interrupt-controller;
+			interrupts-extended = <&cpu0_intc 11 &cpu0_intc 9>;
+			reg = <0x0 0x0c000000 0x0 0x00002000
+			       0x0 0x0c002000 0x0 0x001fe000
+			       0x0 0x0c200000 0x0 0x03e00000>;
+			reg-names = "prio", "irq_en", "reg";
+			riscv,max-priority = <7>;
+			riscv,ndev = <127>;
+		};
+
+		uart0: serial@e4006000 {
+			compatible = "xlnx,xps-uartlite-1.00.a";
+			interrupt-parent = <&plic>;
+			interrupts = <9 1>;
+			reg = <0x0 0xe4006000 0x0 0x1000>;
+			current-speed = <9600>;
+			status = "disabled";
+		};
+	};
+};

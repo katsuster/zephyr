@@ -430,6 +430,7 @@ nokia	Nokia
 nordic	Nordic Semiconductor
 noritake	Noritake Co., Inc. Electronics Division
 novtech	NovTech, Inc.
+nsitexe	NSITEXE, Inc.
 nutsboard	NutsBoard
 nuclei	Nuclei System Technology
 nuvoton	Nuvoton Technology Corporation

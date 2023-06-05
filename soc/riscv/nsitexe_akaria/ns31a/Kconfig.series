@@ -1,0 +1,9 @@
+# SPDX-License-Identifier: Apache-2.0
+
+config SOC_SERIES_NSITEXE_AKARIA_NS31A
+	bool "NSITEXE Akaria NS31A SoC series"
+	select RISCV
+	select RISCV_PRIVILEGED
+	select SOC_FAMILY_NSITEXE_AKARIA
+	help
+	  Enable support for NSITEXE Akaria NS31A SoC implementations

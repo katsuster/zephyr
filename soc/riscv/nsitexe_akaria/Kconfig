@@ -1,0 +1,14 @@
+# SPDX-License-Identifier: Apache-2.0
+
+config SOC_FAMILY_NSITEXE_AKARIA
+	bool
+
+if SOC_FAMILY_NSITEXE_AKARIA
+
+config SOC_FAMILY
+	string
+	default "nsitexe_akaria"
+
+source "soc/riscv/nsitexe_akaria/*/Kconfig.soc"
+
+endif # SOC_FAMILY_NSITEXE_AKARIA
