@@ -1,0 +1,5 @@
+# SPDX-License-Identifier: Apache-2.0
+
+config BOARD_NSITEXE_NS31A_ARTY_A7
+	bool "NSITEXE Akaria NS31A on Arty A7 target"
+	depends on SOC_NSITEXE_AKARIA_NS31A_EVAL

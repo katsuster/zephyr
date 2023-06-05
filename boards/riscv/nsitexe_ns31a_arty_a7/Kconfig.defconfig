@@ -1,0 +1,13 @@
+# SPDX-License-Identifier: Apache-2.0
+
+if BOARD_NSITEXE_NS31A_ARTY_A7
+
+config BOARD
+	default "nsitexe_ns31a_arty_a7"
+
+# Use thread local storage by default so that
+# this feature gets more CI coverage.
+config THREAD_LOCAL_STORAGE
+	default y
+
+endif #BOARD_NSITEXE_NS31A_ARTY_A7

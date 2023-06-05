@@ -1,0 +1,11 @@
+identifier: nsitexe_ns31a_arty_a7
+name: NSITEXE NS31A on Arty A7 board
+type: mcu
+arch: riscv32
+toolchain:
+  - zephyr
+ram: 128
+testing:
+  ignore_tags:
+    - net
+    - bluetooth
